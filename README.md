@@ -1,5 +1,7 @@
 # SymfonyApi
 
+This Symfony app is being developed on Symfony 6.0.2
+
 ## System requirements
 
 PHP Version: 8.0.28 | Download link https://www.php.net/releases/
@@ -25,3 +27,6 @@ Run the following commands to set up the DB:
 
 Create the DB
 - php bin/console doctrine:database:create
+
+Run the migration
+- php bin/console doctrine:migrations:migrate
