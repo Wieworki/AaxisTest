@@ -8,8 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Product
 {
     #[ORM\Id]
@@ -83,23 +85,9 @@ class Product
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
     public function getUpdateAt(): ?\DateTimeImmutable
     {
         return $this->update_at;
-    }
-
-    public function setUpdateAt(\DateTimeImmutable $update_at): static
-    {
-        $this->update_at = $update_at;
-
-        return $this;
     }
 
     /**
@@ -115,9 +103,9 @@ class Product
      * Automatically updates the "update_at" value by using a Lifecycle callback when the entity is being updated
      */
     #[ORM\PreUpdate]
-    public function setUpdateAtValue(): void
+    public function setUpdateAtValue(PreUpdateEventArgs $event): void
     {
-        $this->update_at = new \DateTimeImmutable();
+        $event->getEntity()->update_at = new \DateTimeImmutable();
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
