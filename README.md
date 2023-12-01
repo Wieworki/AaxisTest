@@ -3,6 +3,10 @@
 This Symfony app is being developed on Symfony 6.0.2
 The toker authentication is done with the bundle https://symfony.com/bundles/LexikJWTAuthenticationBundle/current/index.html
 
+Disclaimer:
+The evaluation criteria "Customer Information Display: Evaluate your ability to present information clearly and
+efficiently in the user interface, ensuring a smooth user experience" was dismissed on the development of this API, after consulting with the evaluation team. No frontend functionalities should be evaluated on this application.
+
 ## System requirements
 
 PHP Version: 8.0.28 | Download link https://www.php.net/releases/
@@ -37,11 +41,45 @@ Run the following command to create an admin user
 - php bin/console new:admin:user admin@admin.com admin
 
 ## Instructions
-Follow the next steps to test the app
+Follow the next steps to test the app. The easiest way to test the routes would be using Postman or a similar application
 
 Generate the SSL keys (must have openSSL on server)
 - php bin/console lexik:jwt:generate-keypair
 
-Start the local server
+Start the local server with one of the following commands
 - php bin/console server:start
+- symfony server:start (requires having Symfony CLI installed)
 
+### Routes
+All the API routes (except the login) are protected by token authentication. You'll need to send the token in the header on each request.
+
+Login to get the token
+- http://127.0.0.1:8000/api/login_check
+- JSON example: 
+{"username":"admin@admin.com","password":"admin"}
+
+Create a new product (POST request):
+- http://127.0.0.1:8000/api/product/create
+- JSON example:
+{
+    "sku": "sku1",
+    "product_name":"name1",
+    "description": "description"
+}
+
+Get a list of all products (GET request):
+- http://127.0.0.1:8000/api/product/list
+
+Update products (POST request):
+- http://127.0.0.1:8000/api/product/update
+- JSON example:
+[
+   {"sku": "sku1",
+    "product_name": "new name1",
+    "description": "new description1"
+   },
+    {"sku": "sku2",
+    "product_name": "new name2",
+    "description": "new description2"
+   }
+]
