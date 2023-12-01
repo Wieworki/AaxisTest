@@ -18,28 +18,19 @@ class ProductController extends AbstractController
     {
         $response = [];
         $data = json_decode($request->getContent(),true);
-        if ($this->isCreateProductJSONStructureValid($data)) {
-            $product = new Product();
-            $product->setSku($data['sku']);
-            $product->setProductName($data['product_name']);
-        $errors = $this->isProductJSONDataValid($product, $validator, $doctrine); {
-
-        }
-            $product->setDescription($data['description']);
-            if ($errors) {
-                $response = $errors;
+        if (is_array($data) && !empty($data)) {
+            $errors = $this->processProductCreate($data, $validator, $doctrine);
+            if (!$errors) {
+                $response[] = "All the products where created correctly";
             } else {
-                $doctrine->persist($product);
-                $doctrine->flush();
-                $response = [
-                    'message' => 'The product was created successfully'
-                ];
+                $response = $errors;
             }
         } else {
             $response = [
                 'message' => 'JSON structure recieved is invalid'
             ];
         }
+
         return $this->json($response);
     }
 
@@ -68,7 +59,7 @@ class ProductController extends AbstractController
     {
         $response = [];
         $data = json_decode($request->getContent(),true);
-        if (is_array($data)) {
+        if (is_array($data) && !empty($data)) {
             $errors = $this->processProductUpdate($data, $validator, $doctrine);
             if (!$errors) {
                 $response[] = "All the products where updated correctly";
@@ -81,11 +72,42 @@ class ProductController extends AbstractController
         return $this->json($response);
     }
 
+
+    /**
+     * @param array $data
+     * @param ValidatorInterface $validator
+     * @param EntityManagerInterface $doctrine
+     * @return array
+     */
+    private function processProductCreate(array $data, ValidatorInterface $validator, EntityManagerInterface $doctrine) {
+        $msges = [];
+        $counter = 0;
+        foreach ($data as $row) {
+            $counter++;
+            if ($this->isProductJSONStructureValid($row)) {
+                $product = new Product();
+                $product->setSku($row['sku']);
+                $product->setProductName($row['product_name']);
+                $product->setDescription($row['description']);
+                $errors = $this->isCreateProductJSONDataValid($product, $validator, $doctrine); 
+                if ($errors) {
+                    $msges[] = $errors;
+                } else {
+                    $doctrine->persist($product);
+                }
+            } else {
+                $msges[] = "Product number ".$counter." has an invalid JSON structure and could not be procesed.";
+            }
+        }
+        $doctrine->flush();
+        return $msges;
+    }
+
     /**
      * @param string $data 
      * @return bool
      */
-    private function isCreateProductJSONStructureValid($data) {
+    private function isProductJSONStructureValid($data) {
         if (is_array($data) && array_key_exists('sku', $data) && array_key_exists('product_name', $data) && array_key_exists('description', $data)) {
             return true;
         } else {
@@ -100,7 +122,7 @@ class ProductController extends AbstractController
      * @return array
      *     
      */
-    private function isProductJSONDataValid(Product $product, ValidatorInterface $validator, EntityManagerInterface $doctrine) {
+    private function isCreateProductJSONDataValid(Product $product, ValidatorInterface $validator, EntityManagerInterface $doctrine) {
         $response = [];
         $productExists = $doctrine->getRepository(Product::class)->findOneBy(array('sku' => $product->getSku()));
         if ($productExists) {
@@ -131,7 +153,7 @@ class ProductController extends AbstractController
         $counter = 0;
         foreach ($data as $row) {
             $counter++;
-            if ($this->isCreateProductJSONStructureValid($row)) {
+            if ($this->isProductJSONStructureValid($row)) {
                 $sku = $row['sku'];
                 $product = $doctrine->getRepository(Product::class)->findOneBy(array('sku' => $sku));
                 if ($product == null) {
