@@ -19,14 +19,17 @@ Make sure the following extensions are installed and enabled in the php.ini file
 ## Database configuration
 
 The database and the user used for the DB connection can be changed from the .env file. 
-The default configuration uses a DB "axis".The user is "postgres" with password "admin". Make sure to update the .env file with an existing user on your Postgres DB.
+The default configuration uses a DB "axis". The user is "postgres" with password "admin". Make sure to update the .env file with an existing user on your Postgres DB.
 
 ### Database creation
 
-Run the following commands to set up the DB:
+To set up the DB run the following commands taking the project folder as root:
 
 Create the DB
 - php bin/console doctrine:database:create
 
 Run the migration
 - php bin/console doctrine:migrations:migrate
+
+Run the following command to create an admin user
+- php bin/console new:admin:user admin@admin.com admin
