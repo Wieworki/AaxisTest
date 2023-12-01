@@ -13,6 +13,7 @@
         "doctrine/orm": "^2.17",
         "friendsofsymfony/rest-bundle": "^3.6",
         "jms/serializer-bundle": "^5.3",
+        "lexik/jwt-authentication-bundle": "^2.18",
         "symfony/console": "6.0.*",
         "symfony/dotenv": "6.0.*",
         "symfony/flex": "^2",
