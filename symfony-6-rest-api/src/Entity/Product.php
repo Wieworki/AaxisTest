@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -115,5 +118,17 @@ class Product
     public function setUpdateAtValue(): void
     {
         $this->update_at = new \DateTimeImmutable();
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata): void
+    {
+        $metadata->addPropertyConstraint('sku', new NotBlank());
+        $metadata->addPropertyConstraint('sku', new Assert\Length([
+            'max' => 50,
+        ]));
+        $metadata->addPropertyConstraint('product_name', new NotBlank());
+        $metadata->addPropertyConstraint('product_name', new Assert\Length([
+            'max' => 250,
+        ]));
     }
 }
