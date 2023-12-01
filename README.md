@@ -56,7 +56,18 @@ The easiest way to test the routes would be using Postman or a similar applicati
 Login to get the token (POST request)
 - http://127.0.0.1:8000/api/login_check
 - JSON example: 
-{"username":"admin@admin.com","password":"admin"}
+[
+    {
+        "sku": "sku1",
+        "product_name": "name1",
+        "description": "description1"
+    },
+    {
+        "sku": "sku2",
+        "product_name": "name2",
+        "description": "description2"
+    }
+]
 
 Create a new product (POST request):
 - http://127.0.0.1:8000/api/product/create
