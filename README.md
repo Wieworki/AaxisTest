@@ -41,7 +41,11 @@ Run the following command to create an admin user
 - php bin/console new:admin:user admin@admin.com admin
 
 ## Instructions
-Follow the next steps to test the app. The easiest way to test the routes would be using Postman or a similar application
+After cloning the project and configuring the Database, execute the next commands to test the app. 
+The easiest way to test the routes would be using Postman or a similar application
+
+Install the application vendors
+- composer install
 
 Generate the SSL keys (must have openSSL on server)
 - php bin/console lexik:jwt:generate-keypair
@@ -53,7 +57,7 @@ Start the local server with one of the following commands
 ### Routes
 All the API routes (except the login) are protected by token authentication. You'll need to send the token in the header on each request.
 
-Login to get the token
+Login to get the token (POST request)
 - http://127.0.0.1:8000/api/login_check
 - JSON example: 
 {"username":"admin@admin.com","password":"admin"}
